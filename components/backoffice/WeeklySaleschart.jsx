@@ -1,16 +1,95 @@
 "use client"
-import { useState } from "react"
+import { useState } from "react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+import {faker} from '@faker-js/faker';
+
+
 
 
 const WeeklySaleschart = () => {
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+  );
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' ,
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Line Chart',
+      },
+    },
+  };
+
+  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: 'sales',
+        data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+      // {
+      //   label: 'Dataset 2',
+      //   data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
+      //   borderColor: 'rgb(53, 162, 235)',
+      //   backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      // },
+    ],
+  };
+
   const tabs =[
     {
       title:"Sales",
-      type:"sales"
+      type:"sales",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'sales',
+            data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          }
+        ],
+      }
     },
     {
       title:"Orders",
-      type:"orders"
+      type:"orders",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'orders',
+            data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
+            borderColor: 'rgb(0, 137, 132)',
+            backgroundColor: 'rgba(0, 137, 132, 0.5)',
+          }
+        ],
+      }
     }
   ]
   const [chartToDisplay, setChartToDisplay] = useState(tabs[0].type)
@@ -43,7 +122,7 @@ const WeeklySaleschart = () => {
             {
               tabs.map((tab, i)=>{
                 if(chartToDisplay === tab.type){
-                  return <h2>{tab.title}</h2>
+                  return <Line options={options} data={tab.data} />
                 }
                 return null
               })
